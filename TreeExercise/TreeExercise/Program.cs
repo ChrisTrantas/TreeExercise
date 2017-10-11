@@ -11,7 +11,19 @@ namespace TreeExercise
     {
         static void Main(string[] args)
         {
+            BinaryTree<int> btree = new BinaryTree<int>();
+            btree.Root = new BinaryTreeNode<int>(1);
+            btree.Root.Left = new BinaryTreeNode<int>(1);
+            btree.Root.Right = new BinaryTreeNode<int>(1);
 
+            btree.Root.Left.Left = new BinaryTreeNode<int>(1);
+            btree.Root.Left.Right = new BinaryTreeNode<int>(2);
+
+            btree.Root.Left.Left = new BinaryTreeNode<int>(2);
+            btree.Root.Left.Right = new BinaryTreeNode<int>(1);
+
+            Console.WriteLine(btree.Root.Value);
+            Console.WriteLine(btree.Root.Left.Value);
         }
 
     }
@@ -88,6 +100,98 @@ namespace TreeExercise
             // Add the specified number of items
             for (int i = 0; i < initialSize; i++)
                 base.Items.Add(default(Node<T>));
+        }
+    }
+
+    // Expanded the Node Class to focus on Binary Trees
+    public class BinaryTreeNode<T> : Node<T>
+    {
+        // Default Constructor
+        public BinaryTreeNode() : base() { }
+        // Constructor with no data or children
+        public BinaryTreeNode(T data) : base(data, null) { }
+        // Constructor has children
+
+        // Makes a Tree node with children
+        public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right)
+        {
+            base.Value = data;
+            // Make the list have two spots. Left and Right
+            NodeList<T> children = new NodeList<T>(2);
+            children[0] = left;
+            children[1] = right;
+
+            base.Neighbors = children;
+        }
+
+
+        // Getter and setter for neighbors of Left Child
+        public BinaryTreeNode<T> Left
+        {
+            get
+            {
+                if (base.Neighbors == null)
+                    return null;
+                else
+                    return (BinaryTreeNode<T>)base.Neighbors[0];
+            }
+            set
+            {
+                if (base.Neighbors == null)
+                    base.Neighbors = new NodeList<T>(2);
+
+                base.Neighbors[0] = value;
+            }
+        }
+
+        // Getter and setter for neighbors of Right Child
+        public BinaryTreeNode<T> Right
+        {
+            get
+            {
+                if (base.Neighbors == null)
+                    return null;
+                else
+                    return (BinaryTreeNode<T>)base.Neighbors[1];
+            }
+            set
+            {
+                if (base.Neighbors == null)
+                    base.Neighbors = new NodeList<T>(2);
+
+                base.Neighbors[1] = value;
+            }
+        }
+    }
+
+    // Actual Binary Tree Class.
+    // Establishes Root and can have children.
+    public class BinaryTree<T>
+    {
+        private BinaryTreeNode<T> root;
+        
+        public BinaryTree()
+        {
+            root = null;
+        }
+
+        // Clears Root
+        public virtual void Clear()
+        {
+            root = null;
+        }
+
+        // Makes Binary Tree
+        public BinaryTreeNode<T> Root
+        {
+            get
+            {
+                return root;
+            }
+            set
+            {
+                root = value;
+            }
         }
     }
 }
