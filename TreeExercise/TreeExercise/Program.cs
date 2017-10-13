@@ -24,6 +24,8 @@ namespace TreeExercise
 
             Console.WriteLine(btree.Root.Value);
             Console.WriteLine(btree.Root.Left.Value);
+            BinaryTreeNode<int> testTree = new BinaryTreeNode<int>(1, btree.Root.Left, btree.Root.Right);
+            Console.WriteLine(testTree.Neighbors);
         }
 
     }
@@ -73,7 +75,7 @@ namespace TreeExercise
         }
 
         // Getter and Setter for specific Nodes Neighbors
-        protected NodeList<T> Neighbors
+        public NodeList<T> Neighbors
         {
             get
             {
