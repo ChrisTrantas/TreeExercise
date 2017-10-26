@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,197 +10,166 @@ namespace TreeExercise
     {
         static void Main(string[] args)
         {
-            BinaryTree<int> btree = new BinaryTree<int>();
-            btree.Root = new BinaryTreeNode<int>(1);
-            btree.Root.Left = new BinaryTreeNode<int>(1);
-            btree.Root.Right = new BinaryTreeNode<int>(1);
+            // Binary tree and give it a default starting value
+            Tree MyTree;
+            int startingValue = 1; // Change this to change the starting value of the tree
+            MyTree = new Tree(startingValue);
 
-            btree.Root.Left.Left = new BinaryTreeNode<int>(1);
-            btree.Root.Left.Right = new BinaryTreeNode<int>(2);
+            #region Pascal Formula
+            System.Console.WriteLine("Pascal Triangle Program");
+            System.Console.Write("Enter the number of rows: ");
 
-            btree.Root.Left.Left = new BinaryTreeNode<int>(2);
-            btree.Root.Left.Right = new BinaryTreeNode<int>(1);
+            // Figure out how many levels and nodes there are
+            string levels = System.Console.ReadLine();
+            int lvl = Convert.ToInt32(levels);
+            int totalNodes = (int)Math.Pow(2, (lvl + 1)) - 1; // 2^(k + 1) - 1
 
-            Console.WriteLine(btree.Root.Value);
-            Console.WriteLine(btree.Root.Left.Value);
-            BinaryTreeNode<int> testTree = new BinaryTreeNode<int>(1, btree.Root.Left, btree.Root.Right);
-            Console.WriteLine(testTree.Neighbors);
-        }
-
-    }
-
-    // Steps to solve Trees
-    // 1: Form a Node class to house and store data and neighbors
-    // 2: Form a NodeList to form into a way to store connections
-    // 3: Form a BinaryTree
-    // 4: Make sure all nodes excluding Root have 2 children.
-    // 5: Make sure Tree traversal can acess Parent's neighbors.
-
-
-    // Node Class
-    // Contains data of the node and neighbors of the node.
-    // Needs a NodeList to contain who all its neighors are
-    // T allows us to determine what kind of data to put in
-    public class Node<T>
-    {
-        // Private member-variables
-        private T data;
-        private NodeList<T> neighbors = null;
-
-        // Generic Constructor
-        public Node() { }
-
-        // Constructor for Empty Node
-        public Node(T data) : this(data, null) { }
-
-        // Constuctor for Node and neighbors
-        public Node(T data, NodeList<T> neighbors)
-        {
-            this.data = data;
-            this.neighbors = neighbors;
-        }
-
-        // Getter and Setter for the specific Nodes Data
-        public T Value
-        {
-            get
+            // Pascal Formula to get right numbers
+            for (int y = 0; y <= lvl; y++)
             {
-                return data;
+                // Starting Level
+                int c = 1;
+                // Pascal Formula
+                for (int x = 0; x <= y; x++)
+                {
+                    System.Console.Write(c);
+                    c = c * (y - x) / (x + 1);
+                   // MyTree.Add(c);
+                }
+                System.Console.WriteLine();
+                System.Console.WriteLine();
             }
-            set
-            {
-                data = value;
-            }
-        }
-
-        // Getter and Setter for specific Nodes Neighbors
-        public NodeList<T> Neighbors
-        {
-            get
-            {
-                return neighbors;
-            }
-            set
-            {
-                neighbors = value;
-            }
+            System.Console.WriteLine();
+            #endregion
+            Console.WriteLine("There should be a total of " + totalNodes + " Nodes");
         }
     }
 
-    // Need to make our own NodeList since C# does not have Tree support
-    // using C# collection to help.
-    // Collection allows for methods like Add(T), Remove(T), and Clear(T)
-    public class NodeList<T> : Collection<Node<T>>
+    // Node class
+    public class Node
     {
-        // Inherits from base
-        public NodeList() : base() { }
+        // Data we need to traverse and keep track of chilren and parents
+        public int value;
+        public Node left;
+        public Node right;
+        public Node previous;
 
-        // Makes Node list to specific size
-        public NodeList(int initialSize)
+        public Node(int initial)
         {
-            // Add the specified number of items
-            for (int i = 0; i < initialSize; i++)
-                base.Items.Add(default(Node<T>));
+            value = initial;
+            left = null;
+            right = null;
+            previous = null;
         }
     }
 
-    // Expanded the Node Class to focus on Binary Trees
-    public class BinaryTreeNode<T> : Node<T>
+    // Binary Search Tree
+    public class Tree
     {
-        // Default Constructor
-        public BinaryTreeNode() : base() { }
-        // Constructor with no data or children
-        public BinaryTreeNode(T data) : base(data, null) { }
-        // Constructor has children
+        Node top;
+        Node previous;
+        Node current;
 
-        // Makes a Tree node with children
-        public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right)
+        public Tree()
         {
-            base.Value = data;
-            // Make the list have two spots. Left and Right
-            NodeList<T> children = new NodeList<T>(2);
-            children[0] = left;
-            children[1] = right;
-
-            base.Neighbors = children;
+            top = null;
+            previous = null;
+            current = null;
         }
 
-
-        // Getter and setter for neighbors of Left Child
-        public BinaryTreeNode<T> Left
+        public Tree(int initial)
         {
-            get
-            {
-                if (base.Neighbors == null)
-                    return null;
-                else
-                    return (BinaryTreeNode<T>)base.Neighbors[0];
-            }
-            set
-            {
-                if (base.Neighbors == null)
-                    base.Neighbors = new NodeList<T>(2);
-
-                base.Neighbors[0] = value;
-            }
+            top = new Node(initial);
+            current = top;
+            previous = null;
         }
 
-        // Getter and setter for neighbors of Right Child
-        public BinaryTreeNode<T> Right
+        public void Add(int value)
         {
-            get
+            // Non- recursive Add
+            if (top == null) // the tree is empty
             {
-                if (base.Neighbors == null)
-                    return null;
-                else
-                    return (BinaryTreeNode<T>)base.Neighbors[1];
+                // Add item as the base node
+                Node NewNode = new Node(value);
+                top = NewNode;
+                return;
             }
-            set
-            {
-                if (base.Neighbors == null)
-                    base.Neighbors = new NodeList<T>(2);
 
-                base.Neighbors[1] = value;
-            }
+            bool added = false;
+            do
+            {
+               // if (current.left == null)
+               // {
+               //     Node NewNode = new Node(value);
+               //     current.left = NewNode;
+               //     current.left.value = current.left.value + previous.right.value;
+               //     previous = current;
+               //     current = current.left;
+               //     added = true;
+               // }
+               // if (current.right == null)
+               // {
+               //     Node NewNode = new Node(value);
+               //     current.right = NewNode;
+               //     current.right.value = current.right.value + previous.left.value;
+               //     previous = current;
+               //     current = current.right;
+               //     added = true;
+               // }
+                // // go left
+                // if (current.left == null)
+                // {
+                //     // Add the item
+                //     Node NewNode = new Node(value);
+                //     current.left = NewNode;
+                //     NewNode.value += previous.right.value;
+                //     current.right = NewNode;
+                //     added = true;
+                // }
+                // // go left
+                // if (current.right == null)
+                // {
+                //     // Add the item
+                //     Node NewNode = new Node(value);
+                //     current.right = NewNode;
+                //     NewNode.value += current.left.value;
+                //     current.right = NewNode;
+                //     added = true;
+                // }
+
+            } while (!added);
+
         }
-    }
 
-    // Actual Binary Tree Class.
-    // Establishes Root and can have children.
-    public class BinaryTree<T>
-    {
-        private BinaryTreeNode<T> root;
-        
-        public BinaryTree()
+        // Add recursively with the pascal formula using AddRecursive
+        public void AddRC(int value)
         {
-            root = null;
+            // Recursive add
+            AddRecursive(ref top, value);
+
         }
 
-        // Clears Root
-        public virtual void Clear()
+        private void AddRecursive(ref Node Node, int value)
         {
-            root = null;
-        }
+            // Private recursive search for where to add the new node
+            if (Node == null)
+            {
+                // Node doesn't exist add it here
+                Node NewNode = new Node(value);
+                Node = NewNode; // Set the old node reference to the newly created node thus attaching it to the tree
+                return; // End the function and fall back
+            }
+            if (current.left == null)
+            {
+                AddRecursive(ref Node.left, value);
+                return;
+            }
+            if (current.right == null)
+            {
+                AddRecursive(ref Node.right, value);
+                return;
+            }
 
-        // Makes Binary Tree
-        public BinaryTreeNode<T> Root
-        {
-            get
-            {
-                return root;
-            }
-            set
-            {
-                root = value;
-            }
         }
     }
 }
-// Four levels deep example.
-//      1
-//     / \
-//   1     1
-//  / \   / \
-//  1  2  2  1
-// /\  /\ /\ /\
-// 1 3 3 4 4 3 3 1
