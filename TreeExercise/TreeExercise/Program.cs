@@ -25,6 +25,7 @@ namespace TreeExercise
             int totalNodes = (int)Math.Pow(2, (lvl + 1)) - 1; // 2^(k + 1) - 1
 
             // Pascal Formula to get right numbers
+            // Prints out the normal sequence
             for (int y = 0; y <= lvl; y++)
             {
                 // Starting Level
@@ -41,6 +42,7 @@ namespace TreeExercise
             }
             System.Console.WriteLine();
             #endregion
+            // Gives the right number if it was in a Balanced Binary Tree
             Console.WriteLine("There should be a total of " + totalNodes + " Nodes");
         }
     }
@@ -49,11 +51,12 @@ namespace TreeExercise
     public class Node
     {
         // Data we need to traverse and keep track of chilren and parents
-        public int value;
-        public Node left;
-        public Node right;
-        public Node previous;
+        public int value; // Value of current node
+        public Node left; // Left Child
+        public Node right; // Right Child
+        public Node previous; // Parent
 
+        // Base Node
         public Node(int initial)
         {
             value = initial;
@@ -66,24 +69,24 @@ namespace TreeExercise
     // Binary Search Tree
     public class Tree
     {
-        Node top;
-        Node previous;
-        Node current;
+        Node top; // Top of the Tree
+        Node current; // Current Node in the Tree
 
+        // Empty Tree
         public Tree()
         {
             top = null;
-            previous = null;
             current = null;
         }
 
+        // Initial Tree set up
         public Tree(int initial)
         {
             top = new Node(initial);
             current = top;
-            previous = null;
         }
 
+        // Add a node to the tree
         public void Add(int value)
         {
             // Non- recursive Add
@@ -173,3 +176,35 @@ namespace TreeExercise
         }
     }
 }
+// Comments and Thoughts
+//
+// Thought Process
+// After a bit of refreshing myself on trees I knew it was a Binary Search Tree that is balanced.
+// Over all it should be rather quick if I had to search it but it is just outputting Pascal's Triangle
+// Once I knew that I found the equation for it so I know how many total nodes I have based on level
+// Drew it out on paper to confirm it as well.
+// 
+// The problem with thinking it as a Binary Search Tree is how to get the values in the right spot
+// espeically since the root is 1 and usually lower goes to the left and the higher values go right recursively
+// With pascal's triangle that simply is not correct
+//
+// A good way to chunk it up is into mini trees. The root would be parent, if I stored that nodes parents opposite child it 
+// could be used to get the value of correct node for both children
+// If it was on the outside I could mark it as so and just have the correct child be "1" since it'll never be higher
+// A idea I had was to connect all the nodes on the same level that way it would of been less depth traversal  but it would of added a lot more connections
+// Making it become less efficent over time
+//
+// Solution
+// The solution I tried to work out was to have the pascal formula be added to the tree based on the current node.
+// That way it would be broken up into triangles
+// example
+//                      1
+//                    /   \
+//                   1       1
+//
+//                    1            1
+//                  / \          /  \
+//                1    2       2     1
+// That way I can recurseivley go through and sort it into proper order while already having the figures
+// I also tried to find an equation I can use to determine the value based on level and then change the nodes value to it
+//        
